@@ -1,0 +1,52 @@
+{
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/autoprefixer": "^9.7.2",
+    "@types/babel__core": "^7.1.9",
+    "@types/babel__preset-env": "^7.9.0",
+    "@types/browser-sync": "^3001.0.28-alpha",
+    "@types/core-js": "^2.5.3",
+    "@types/eslint-plugin-prettier": "^3.1.0",
+    "@types/node": "^14.0.27",
+    "@types/prettier": "^2.0.2",
+    "@types/terser-webpack-plugin": "^4.0.0",
+    "@types/webpack": "^4.41.21",
+    "@types/webpack-bundle-analyzer": "^3.8.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "autoprefixer": "^9.8.6",
+    "babel-loader": "^8.1.0",
+    "browser-sync": "^2.26.12",
+    "core-js": "^3.6.5",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "glslify-loader": "^2.0.0",
+    "prettier": "^2.0.5",
+    "raw-loader": "^4.0.1",
+    "terser-webpack-plugin": "^4.0.0",
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "typesync": "^0.7.0",
+    "webpack": "^4.44.1",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "scripts": {
+    "postinstall": "typesync",
+    "checkType": "tsc --watch",
+    "dev": "NODE_ENV=development webpack --watch --mode development --display-error-details --progress --colors",
+    "build": "NODE_ENV=production webpack --mode production --display-error-details --progress --colors",
+    "lint": "eslint --fix --ext ./src/ts/**/*.ts"
+  },
+  "dependencies": {
+    "glsl-easings": "^1.0.0",
+    "glsl-noise": "^0.0.0",
+    "glsl-matrix": "git://github.com/ykob/glsl-matrix.git",
+    "glsl-util": "git://github.com/ykob/glsl-util.git",
+    "three": "^0.119.1"
+  }
+}
