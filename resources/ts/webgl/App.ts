@@ -1,75 +1,90 @@
 import * as THREE from 'three';
-import { Octahedron } from './objects/Octahedron';
-import { LightOctahedron } from './objects/LightOctahedron';
-// import Ground from './Ground';
-// import SkyOctahedronShell from './SkyOctahedronShell';
-// import SkyOctahedron from './SkyOctahedron';
+import { Words } from './objects/Words';
 
 export class App {
+  viewProps: {width: number, height: number, dpr: number};
   canvasElement: HTMLCanvasElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
-  camera: THREE.Camera;
+  camera: THREE.PerspectiveCamera;
   lightHemi: THREE.HemisphereLight;
   lightPoint: THREE.PointLight;
+  words: Words;
   clock: THREE.Clock;
   time: number;
-  octahedron: Octahedron;
-  lightOctahedron: LightOctahedron;
 
   constructor(canvasElement: HTMLCanvasElement) {
+    this.viewProps = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      dpr: Math.min(devicePixelRatio, 2 || 1),
+    };
     this.canvasElement = canvasElement;
     this.renderer = new THREE.WebGLRenderer({
-      antialias: false,
+      alpha: true,
+      antialias: true,
       canvas: this.canvasElement
     });
     this.scene = new THREE.Scene();
+
     this.camera = new THREE.PerspectiveCamera(
       45,
-      document.body.clientWidth / window.innerHeight,
+      this.viewProps.width / this.viewProps.height,
       1,
       10000
     );
+
     this.clock = new THREE.Clock();
     this.time = 0;
-    this.lightHemi = new THREE.HemisphereLight(0xffffff, 0x666666, 5);
-    this.lightPoint = new THREE.PointLight(0xff0000, 4, 1000);
-    this.octahedron = new Octahedron(100, 3);
-    this.lightOctahedron = new LightOctahedron(60, 3);
+    // this.lightHemi = new THREE.HemisphereLight(0xffffff, 0x666666, 5);
+    // this.lightPoint = new THREE.PointLight(0xff0000, 4, 1000);
+    this.words = new Words();
     this.init();
+    this.bind();
   }
 
   render() {
-    const time = this.clock.getDelta();
-    // this.time += 0.00007;
-    // console.log(time);
-    this.octahedron.render(time);
-    // this.skyOctahedron.render(time);
-    // this.skyOctahedronShell.render(time);
+    const deltaTime = this.clock.getDelta();
+    this.words.update(deltaTime);
     this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.render.bind(this));
   }
 
-  // renderLoop() {
-  //   this.render();
-  // }
+  animate() {
+    this.render();
+    requestAnimationFrame(this.animate.bind(this));
+  }
+
+  handleResize() {
+    console.log('resize');
+
+    const vp = this.viewProps;
+    vp.width = window.innerWidth;
+    vp.height = window.innerHeight;
+
+    this.renderer.setSize(vp.width, vp.height);
+    this.camera.aspect = vp.width/vp.height;
+    this.camera.updateProjectionMatrix();
+
+    //this.words.resize();
+  }
+
+  bind() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
 
   init() {
     console.log('init');
+    const vp = this.viewProps;
+    vp.width = window.innerWidth;
+    vp.height = window.innerHeight;
 
-    this.renderer.setSize(document.body.clientWidth, window.innerHeight);
-    this.renderer.setClearColor(0x000000, 1.0);
-    this.camera.position.z = 700;
-    // this.camera.position.y = -50;
+    this.renderer.setSize(vp.width, vp.height);
+    this.renderer.setClearColor(0xffffff, 1.0);
+    this.camera.position.z = 300;
 
-    // this.lightHemi.position.set(0, 10, 10);
-    this.lightPoint.position.set(0, 0, 0);
-
-    // this.scene.add(this.lightHemi);
-    // const pointLightHelper = new THREE.PointLightHelper(this.lightPoint, 1);
-    // this.scene.add(pointLightHelper);
-    this.scene.add(this.octahedron.object);
+    // this.lightPoint.position.set(0, 0, 0);
+    this.scene.add(this.words.mesh);
     this.clock.start();
-    this.render();
+    this.animate();
   }
 }
