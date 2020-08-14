@@ -7,8 +7,8 @@ export class App {
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
-  lightHemi: THREE.HemisphereLight;
-  lightPoint: THREE.PointLight;
+  // lightHemi: THREE.HemisphereLight;
+  // lightPoint: THREE.PointLight;
   words: Words;
   clock: THREE.Clock;
   time: number;
@@ -57,32 +57,37 @@ export class App {
   handleResize() {
     console.log('resize');
 
-    const vp = this.viewProps;
-    vp.width = window.innerWidth;
-    vp.height = window.innerHeight;
-
-    this.renderer.setSize(vp.width, vp.height);
-    this.camera.aspect = vp.width/vp.height;
-    this.camera.updateProjectionMatrix();
-
     //this.words.resize();
+    this.initRenderer();
+    this.initCamera();
   }
 
   bind() {
     window.addEventListener('resize', this.handleResize.bind(this));
   }
 
-  init() {
-    console.log('init');
+  initCamera() {
     const vp = this.viewProps;
     vp.width = window.innerWidth;
     vp.height = window.innerHeight;
+    this.camera.aspect = vp.width/vp.height;
+    this.camera.updateProjectionMatrix();
+  }
 
+  initRenderer() {
+    const vp = this.viewProps;
+    vp.width = window.innerWidth;
+    vp.height = window.innerHeight;
     this.renderer.setSize(vp.width, vp.height);
+  }
+
+  async init() {
+    console.log('init');
+    this.initRenderer();
+    this.initCamera();
     this.renderer.setClearColor(0xffffff, 1.0);
     this.camera.position.z = 300;
-
-    // this.lightPoint.position.set(0, 0, 0);
+    await this.words.init();
     this.scene.add(this.words.mesh);
     this.clock.start();
     this.animate();
