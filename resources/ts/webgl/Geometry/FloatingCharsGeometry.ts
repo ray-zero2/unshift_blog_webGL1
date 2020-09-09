@@ -25,6 +25,7 @@ export class FloatingCharsGeometry extends THREE.BufferGeometry {
     const charHeight = this.charWidth;
 
     for(let i = 0; i < this.numChars; i++) {
+      // GLSLで使用するランダムな値 (vec3になるので3つ)
       const randomValue = [Math.random(), Math.random(), Math.random()];
 
       //頂点データの生成

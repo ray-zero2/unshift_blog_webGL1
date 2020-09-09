@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Words } from './objects/Words';
 
 export class App {
@@ -7,11 +8,10 @@ export class App {
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
-  // lightHemi: THREE.HemisphereLight;
-  // lightPoint: THREE.PointLight;
   words: Words;
   clock: THREE.Clock;
   time: number;
+  controls: OrbitControls;
 
   constructor(canvasElement: HTMLCanvasElement) {
     this.viewProps = {
@@ -34,10 +34,10 @@ export class App {
       10000
     );
 
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+
     this.clock = new THREE.Clock();
     this.time = 0;
-    // this.lightHemi = new THREE.HemisphereLight(0xffffff, 0x666666, 5);
-    // this.lightPoint = new THREE.PointLight(0xff0000, 4, 1000);
     this.words = new Words();
     this.init();
     this.bind();
@@ -46,24 +46,13 @@ export class App {
   render() {
     const deltaTime = this.clock.getDelta();
     this.words.update(deltaTime);
+    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
 
   animate() {
     this.render();
     requestAnimationFrame(this.animate.bind(this));
-  }
-
-  handleResize() {
-    console.log('resize');
-
-    //this.words.resize();
-    this.initRenderer();
-    this.initCamera();
-  }
-
-  bind() {
-    window.addEventListener('resize', this.handleResize.bind(this));
   }
 
   initCamera() {
@@ -81,12 +70,25 @@ export class App {
     this.renderer.setSize(vp.width, vp.height);
   }
 
+
+  handleResize() {
+    //this.words.resize();
+    this.initRenderer();
+    this.initCamera();
+  }
+
+  bind() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
   async init() {
     console.log('init');
     this.initRenderer();
     this.initCamera();
     this.renderer.setClearColor(0xffffff, 1.0);
     this.camera.position.z = 300;
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.1;
     await this.words.init();
     this.scene.add(this.words.mesh);
     this.clock.start();
