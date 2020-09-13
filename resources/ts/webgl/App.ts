@@ -1,9 +1,17 @@
 import * as THREE from 'three';
+import WebFont from 'webfontloader';
+
+import { ViewProps } from '../@types/types';
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { Words } from './objects/Words';
+import { Words } from './objects/words/Words';
+
+
+/*** 文字のフォント */
+const FONT_FAMILY = 'Cabin Sketch';
 
 export class App {
-  viewProps: {width: number, height: number, dpr: number};
+  viewProps: ViewProps;
   canvasElement: HTMLCanvasElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
@@ -48,11 +56,30 @@ export class App {
     this.words.update(deltaTime);
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
+
   }
 
   animate() {
     this.render();
     requestAnimationFrame(this.animate.bind(this));
+  }
+
+  loadFonts() {
+    return new Promise(resolve => {
+      console.log('web font');
+      WebFont.load({
+        google: {
+          families: [FONT_FAMILY]
+        },
+        loading: () => {
+          console.log('loading');
+        },
+        active: () => {
+          console.log('fonts loaded');
+          resolve();
+        }
+      })
+    })
   }
 
   initCamera() {
@@ -69,7 +96,6 @@ export class App {
     vp.height = window.innerHeight;
     this.renderer.setSize(vp.width, vp.height);
   }
-
 
   handleResize() {
     //this.words.resize();
@@ -89,7 +115,9 @@ export class App {
     this.camera.position.z = 300;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.1;
-    await this.words.init();
+    await this.loadFonts();
+    console.log('word init');
+    await this.words.init('0', FONT_FAMILY);
     this.scene.add(this.words.mesh);
     this.clock.start();
     this.animate();
