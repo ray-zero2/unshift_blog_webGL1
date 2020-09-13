@@ -14,6 +14,7 @@
     "@types/node": "^14.0.27",
     "@types/prettier": "^2.0.2",
     "@types/terser-webpack-plugin": "^4.0.0",
+    "@types/webfontloader": "^1.6.32",
     "@types/webpack": "^4.41.21",
     "@types/webpack-bundle-analyzer": "^3.8.0",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
@@ -44,9 +45,10 @@
   },
   "dependencies": {
     "glsl-easings": "^1.0.0",
-    "glsl-noise": "^0.0.0",
     "glsl-matrix": "git://github.com/ykob/glsl-matrix.git",
+    "glsl-noise": "^0.0.0",
     "glsl-util": "git://github.com/ykob/glsl-util.git",
-    "three": "^0.119.1"
+    "three": "^0.119.1",
+    "webfontloader": "^1.6.28"
   }
 }
